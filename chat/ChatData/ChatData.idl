@@ -1,8 +1,0 @@
-module ChatData{
-    struct Message {
-        string user;
-        unsigned long time;
-        string content;
-    };
-    #pragma keylist Message user
-};

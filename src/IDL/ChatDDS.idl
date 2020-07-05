@@ -1,0 +1,13 @@
+module ChatDDS
+{
+   struct Message
+   {
+      long userID;
+      
+      string userName;
+
+      string message;
+   };
+
+   #pragma keylist Message userID
+};
