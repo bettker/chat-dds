@@ -21,9 +21,28 @@ struct _ChatDDS_Message ;
 extern  v_copyin_result __ChatDDS_Message__copyIn(c_type dbType, const class ChatDDS::Message *from, struct _ChatDDS_Message *to);
 extern  void __ChatDDS_Message__copyOut(const void *_from, void *_to);
 struct _ChatDDS_Message {
-    c_long userID;
-    c_string userName;
-    c_string message;
+    c_ushort id;
+    c_string username;
+    c_string time;
+    c_string content;
+};
+
+extern c_metaObject __ChatDDS_SystemMessageType__load (c_base base);
+enum _ChatDDS_SystemMessageType {
+    _ChatDDS_JOIN,
+    _ChatDDS_QUIT
+};
+
+extern const char *ChatDDS_SystemMessage_metaDescriptor[];
+extern const c_ulong ChatDDS_SystemMessage_metaDescriptorArrLength;
+extern const c_ulong ChatDDS_SystemMessage_metaDescriptorLength;
+extern c_metaObject __ChatDDS_SystemMessage__load (c_base base);
+struct _ChatDDS_SystemMessage ;
+extern  v_copyin_result __ChatDDS_SystemMessage__copyIn(c_type dbType, const class ChatDDS::SystemMessage *from, struct _ChatDDS_SystemMessage *to);
+extern  void __ChatDDS_SystemMessage__copyOut(const void *_from, void *_to);
+struct _ChatDDS_SystemMessage {
+    c_string username;
+    enum _ChatDDS_SystemMessageType type;
 };
 
 #undef OS_API

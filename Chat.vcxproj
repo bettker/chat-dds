@@ -151,13 +151,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Chatter.cpp" />
-    <ClCompile Include="src\MessageBoard.cpp" />
     <ClCompile Include="src\Chat.cpp" />
     <ClCompile Include="lib\glad\src\glad.c" />
+    <ClCompile Include="src\Chatter.cpp" />
     <ClCompile Include="src\IDL_IMPL\ChatDDS.cpp" />
     <ClCompile Include="src\IDL_IMPL\ChatDDSSplDcps.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\MessageBoard.cpp" />
     <ClCompile Include="src\WindowAPI\GUI.cpp" />
     <ClCompile Include="src\WindowAPI\ImGui\imgui.cpp" />
     <ClCompile Include="src\WindowAPI\ImGui\imgui_demo.cpp" />
@@ -177,12 +177,12 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Chatter.h" />
-    <ClInclude Include="src\MessageBoard.h" />
     <ClInclude Include="src\Chat.h" />
+    <ClInclude Include="src\Chatter.h" />
     <ClInclude Include="src\IDL_IMPL\ChatDDS.h" />
     <ClInclude Include="src\IDL_IMPL\ChatDDSSplDcps.h" />
     <ClInclude Include="src\IDL_IMPL\ChatDDS_DCPS.hpp" />
+    <ClInclude Include="src\MessageBoard.h" />
     <ClInclude Include="src\WindowAPI\Definitions.hpp" />
     <ClInclude Include="src\WindowAPI\GUI.h" />
     <ClInclude Include="src\WindowAPI\ImGui\imconfig.h" />
