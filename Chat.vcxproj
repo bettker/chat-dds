@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="src\Chat.cpp" />
     <ClCompile Include="lib\glad\src\glad.c" />
+    <ClCompile Include="src\ChatListener.cpp" />
     <ClCompile Include="src\Chatter.cpp" />
     <ClCompile Include="src\IDL_IMPL\ChatDDS.cpp" />
     <ClCompile Include="src\IDL_IMPL\ChatDDSSplDcps.cpp" />
@@ -178,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Chat.h" />
+    <ClInclude Include="src\ChatListener.h" />
     <ClInclude Include="src\Chatter.h" />
     <ClInclude Include="src\IDL_IMPL\ChatDDS.h" />
     <ClInclude Include="src\IDL_IMPL\ChatDDSSplDcps.h" />
