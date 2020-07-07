@@ -4,12 +4,6 @@
 
 #include "IDL_IMPL/ChatDDS_DCPS.hpp"
 
-struct Time {
-    unsigned short hour;
-    unsigned short min;
-    unsigned short sec;
-};
-
 class Chatter {
 private:
     std::string username;
@@ -32,6 +26,8 @@ public:
     Chatter(std::string _username, std::string room, int lang);
 
     void joinRoom(std::string room);
+
+    void quitRoom();
 
     void sendMessage(std::string message);
 

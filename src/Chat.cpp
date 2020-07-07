@@ -62,17 +62,12 @@ void Chat::Run() {
                     v.push_back(word);
 
                     if (v[0] == "/join" || v[0] == "/room") {
+                        chatter->quitRoom();
                         JoinRoom(v[1]);
                         room = v[1];
-
-                    }
-                    else if (v[0] == "/pm" || v[0] == "/private") {
-                        chatter->sendPrivateMessage(v[1], v[2]);
-
                     }
                     else if (v[0] == "/ignore") {
                         messageBoard->ignoreUser(v[1]);
-
                     }
                     else {
                         messageBoard->writeMessage(">> Comando \"" + v[0] + "\" não encontrado");
@@ -86,6 +81,7 @@ void Chat::Run() {
 
             GUI::ContinueSameLine();
             if (GUI::MakeButton("Sair")) {
+                chatter->quitRoom();
                 shouldRun = false;
             }
 
@@ -169,18 +165,9 @@ void Chat::Exit() {
 }
 
 void Chat::JoinRoom(std::string room) {
-    std::cout << "entrou join room geral" << std::endl;
     chatter->joinRoom(room);
-
-    std::cout << "passou 1 join room geral" << std::endl;
-
     messageBoard->joinRoom(room);
-    
-    std::cout << "passou 2 join room geral" << std::endl;
-    
-    messageBoard->writeMessage(">> Você entrou na sala " + room);
- 
-    std::cout << "passou 2 join room geral" << std::endl;
+    //messageBoard->writeMessage(">> Você entrou na sala " + room);
 }
 
 std::string* Chat::GetMultiLineMessages(float larg) {

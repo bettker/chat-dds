@@ -2,7 +2,7 @@
 
 MessageBoard::MessageBoard(std::string _username, std::string room, int lang) {
     username = _username;
-    ignoredFilter = "";
+    filter_expression = "";
 
     try {
         dp = dds::domain::DomainParticipant(lang);
@@ -15,15 +15,7 @@ MessageBoard::MessageBoard(std::string _username, std::string room, int lang) {
         topic_room = dds::topic::Topic<ChatDDS::Message>(dp, "RoomMsgTopic", topicQos);
         topic_sys = dds::topic::Topic<ChatDDS::SystemMessage>(dp, "SystemMsgTopic", topicQos);
 
-        //filter = dds::topic::Filter("(username = 'teste')");
-        //cfTopic = dds::topic::ContentFilteredTopic<ChatDDS::Message>(topic_room, "RoomMsgTopic", filter);
-
-        subQos = dp.default_subscriber_qos() << dds::core::policy::Partition(room);
-        sub = dds::sub::Subscriber(dp, subQos);
-
         mask << dds::core::status::StatusMask::data_available();
-        //drQos = topic_room.qos();
-        drM = dds::sub::DataReader<ChatDDS::Message>(sub, topic_room, drQos, &listener, mask);
     }
     catch (const dds::core::Exception& e) {
         std::cout << "Error (MessageBoard constructor): " << e.what() << std::endl;
@@ -44,6 +36,7 @@ void MessageBoard::joinRoom(std::string room) {
         subQos = dp.default_subscriber_qos() << dds::core::policy::Partition(room);
         sub = dds::sub::Subscriber(dp, subQos);
         drM = dds::sub::DataReader<ChatDDS::Message>(sub, topic_room, drQos, &listener, mask);
+        drSM = dds::sub::DataReader<ChatDDS::SystemMessage>(sub, topic_sys, drQos, &listener, mask);
     }
     catch (const dds::core::Exception& e) {
         std::cout << "Error (joinRoom): " << e.what() << std::endl;
@@ -53,7 +46,7 @@ void MessageBoard::joinRoom(std::string room) {
 
 void MessageBoard::ignoreUser(std::string _username) {
     try {
-/*        if (ignoredUsers.size() == 0) {
+        if (ignoredUsers.size() == 0) {
             filter_expression = "(username = \%0)";
         }
         else {
@@ -71,7 +64,7 @@ void MessageBoard::ignoreUser(std::string _username) {
         dds::topic::Filter filter(filter_expression, ignoredUsers);
         dds::topic::ContentFilteredTopic<ChatDDS::Message> cfTopic(topic_room, "RoomMsgTopic", filter);
 
-        drM = dds::sub::DataReader<ChatDDS::Message>(sub, cfTopic, drQos, &listener, mask);*/
+        drM = dds::sub::DataReader<ChatDDS::Message>(sub, cfTopic, drQos, &listener, mask);
 
         writeMessage(">> Voce nao recebera mais mensagens de " + _username);
     }

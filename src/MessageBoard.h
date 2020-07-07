@@ -11,7 +11,8 @@ private:
     std::string username;
     std::vector<std::string> newMessages;
 
-    std::string ignoredFilter;
+    std::string filter_expression;
+    std::vector<std::string> ignoredUsers;
 
     ChatListener listener = ChatListener(&newMessages);
 
@@ -20,9 +21,6 @@ private:
     dds::topic::qos::TopicQos topicQos;
     dds::topic::Topic<ChatDDS::Message> topic_room = dds::core::null;
     dds::topic::Topic<ChatDDS::SystemMessage> topic_sys = dds::core::null;
-
-    //dds::topic::Filter filter = dds::topic::Filter("(username = '10')");
-    //dds::topic::ContentFilteredTopic<ChatDDS::Message> cfTopic = dds::core::null;
 
     dds::sub::qos::SubscriberQos subQos;
     dds::sub::Subscriber sub = dds::core::null;

@@ -15,13 +15,8 @@ Chatter::Chatter(std::string _username, std::string room, int lang) {
         topic_room = dds::topic::Topic<ChatDDS::Message>(dp, "RoomMsgTopic", topicQos);
         topic_sys = dds::topic::Topic<ChatDDS::SystemMessage>(dp, "SystemMsgTopic", topicQos);
 
-        pubQos = dp.default_publisher_qos() << dds::core::policy::Partition(room);
-        pub = dds::pub::Publisher(dp, pubQos);
-
         dwQos = topicQos;
         dwQos << dds::core::policy::WriterDataLifecycle::ManuallyDisposeUnregisteredInstances();
-        dwM = dds::pub::DataWriter<ChatDDS::Message>(pub, topic_room, dwQos);
-        dwSM = dds::pub::DataWriter<ChatDDS::SystemMessage>(pub, topic_sys, dwQos);
     }
     catch (const dds::core::Exception& e) {
         std::cout << "Error (Chatter constructor): " << e.what() << std::endl;
@@ -35,6 +30,8 @@ void Chatter::joinRoom(std::string room) {
         pub = dds::pub::Publisher(dp, pubQos);
         dwM = dds::pub::DataWriter<ChatDDS::Message>(pub, topic_room, dwQos);
         dwSM = dds::pub::DataWriter<ChatDDS::SystemMessage>(pub, topic_sys, dwQos);
+
+        dwSM << ChatDDS::SystemMessage(username, ChatDDS::SystemMessageType::JOIN);
     }
     catch (const dds::core::Exception& e) {
         std::cout << "Error (joinRoom): " << e.what() << std::endl;
@@ -42,28 +39,22 @@ void Chatter::joinRoom(std::string room) {
     }
 }
 
-void Chatter::sendMessage(std::string message) {
+void Chatter::quitRoom() {
     try {
-        if (dwM.topic_description().name() != "RoomMsgTopic")
-            dwM = dds::pub::DataWriter<ChatDDS::Message>(pub, topic_room, dwQos);
-
-        dwM << ChatDDS::Message(messagesSent++, username, getTime(), message);
+        dwSM << ChatDDS::SystemMessage(username, ChatDDS::SystemMessageType::QUIT);
     }
     catch (const dds::core::Exception& e) {
-        std::cout << "Error (sendMessage): " << e.what() << std::endl;
+        std::cout << "Error (quitRoom): " << e.what() << std::endl;
         exit(1);
     }
 }
 
-void Chatter::sendPrivateMessage(std::string username, std::string message) {
+void Chatter::sendMessage(std::string message) {
     try {
-        if (dwM.topic_description().name() != ("PrivateMsgTopic"))
-            dwM = dds::pub::DataWriter<ChatDDS::Message>(pub, dds::topic::Topic<ChatDDS::Message>(dp, "PrivateMsgTopic", topicQos), dwQos);
-
         dwM << ChatDDS::Message(messagesSent++, username, getTime(), message);
     }
     catch (const dds::core::Exception& e) {
-        std::cout << "Error (sendPrivateMessage): " << e.what() << std::endl;
+        std::cout << "Error (sendMessage): " << e.what() << std::endl;
         exit(1);
     }
 }
