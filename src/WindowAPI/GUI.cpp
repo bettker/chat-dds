@@ -225,22 +225,24 @@ namespace WAPI
 	{
 		char* c = _strdup(val->c_str());
 
-		ImGui::InputText(label.c_str(), c, 1024);
+		ImGui::InputText(label.c_str(), c, 100);
 
 		*val = c;
 		
-		// delete[] c;
+		//delete[] c;
 	}
 
 	void GUI::MakeInput(std::string label, std::string hint, std::string* val)
 	{
+		//static char* c = new char[100];
+
 		char* c = _strdup(val->c_str());
 
-		ImGui::InputTextWithHint(label.c_str(), hint.c_str(), c, 1024);
+		ImGui::InputTextWithHint(label.c_str(), hint.c_str(), c, 100);
 
 		*val = c;
 
-		// delete[] c;
+		//delete[] c;
 	}
 
 	void GUI::MakeInput(std::string label, glm::vec2* val)

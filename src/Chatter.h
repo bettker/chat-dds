@@ -1,7 +1,14 @@
 #include <iostream>
 #include <string>
+#include <time.h>
 
 #include "IDL_IMPL/ChatDDS_DCPS.hpp"
+
+struct Time {
+    unsigned short hour;
+    unsigned short min;
+    unsigned short sec;
+};
 
 class Chatter {
 private:
@@ -29,4 +36,7 @@ public:
     void sendMessage(std::string message);
 
     void sendPrivateMessage(std::string username, std::string message);
+
+private:
+    ChatDDS::Time getTime();
 };

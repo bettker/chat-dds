@@ -7,6 +7,21 @@
 #include <os_report.h>
 
 v_copyin_result
+__ChatDDS_Time__copyIn(
+    c_type dbType,
+    const class ::ChatDDS::Time *from,
+    struct _ChatDDS_Time *to)
+{
+    v_copyin_result result = V_COPYIN_RESULT_OK;
+    (void) dbType;
+
+    to->hour = (c_ushort)from->hour();
+    to->min = (c_ushort)from->min();
+    to->sec = (c_ushort)from->sec();
+    return result;
+}
+
+v_copyin_result
 __ChatDDS_Message__copyIn(
     c_type dbType,
     const class ::ChatDDS::Message *from,
@@ -17,7 +32,10 @@ __ChatDDS_Message__copyIn(
 
     to->id = (c_ushort)from->id();
     to->username = c_stringNew(c_getBase(dbType), from->username_.c_str());
-    to->time = c_stringNew(c_getBase(dbType), from->time_.c_str());
+    if(V_COPYIN_RESULT_IS_OK(result)){
+        extern v_copyin_result __ChatDDS_Time__copyIn(c_type, const ChatDDS::Time *, _ChatDDS_Time *);
+        result = __ChatDDS_Time__copyIn(c_memberType(c_structureMember(dbType, 2)), &from->time(), &to->time);
+    }
     to->content = c_stringNew(c_getBase(dbType), from->content_.c_str());
     return result;
 }
@@ -42,6 +60,18 @@ __ChatDDS_SystemMessage__copyIn(
 }
 
 void
+__ChatDDS_Time__copyOut(
+    const void *_from,
+    void *_to)
+{
+    const struct _ChatDDS_Time *from = (const struct _ChatDDS_Time *)_from;
+    class ::ChatDDS::Time *to = (class ::ChatDDS::Time *)_to;
+    to->hour((uint16_t)from->hour);
+    to->min((uint16_t)from->min);
+    to->sec((uint16_t)from->sec);
+}
+
+void
 __ChatDDS_Message__copyOut(
     const void *_from,
     void *_to)
@@ -50,7 +80,11 @@ __ChatDDS_Message__copyOut(
     class ::ChatDDS::Message *to = (class ::ChatDDS::Message *)_to;
     to->id((uint16_t)from->id);
     to->username(from->username ? from->username : "");
-    to->time(from->time ? from->time : "");
+    {
+        extern void __ChatDDS_Time__copyOut(const void *, void *);
+        ChatDDS::Time &tmp = to->time();
+        __ChatDDS_Time__copyOut((const void *)&from->time, &tmp);
+    }
     to->content(from->content ? from->content : "");
 }
 

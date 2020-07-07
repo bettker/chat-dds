@@ -5,12 +5,88 @@
 
 namespace ChatDDS
 {
+    class Time OSPL_DDS_FINAL
+    {
+    public:
+        uint16_t hour_;
+        uint16_t min_;
+        uint16_t sec_;
+
+    public:
+        Time() :
+                hour_(0),
+                min_(0),
+                sec_(0) {}
+
+        explicit Time(
+            uint16_t hour,
+            uint16_t min,
+            uint16_t sec) : 
+                hour_(hour),
+                min_(min),
+                sec_(sec) {}
+
+        Time(const Time &_other) : 
+                hour_(_other.hour_),
+                min_(_other.min_),
+                sec_(_other.sec_) {}
+
+#ifdef OSPL_DDS_CXX11
+        Time(Time &&_other) : 
+                hour_(::std::move(_other.hour_)),
+                min_(::std::move(_other.min_)),
+                sec_(::std::move(_other.sec_)) {}
+
+        Time& operator=(Time &&_other)
+        {
+            if (this != &_other) {
+                hour_ = ::std::move(_other.hour_);
+                min_ = ::std::move(_other.min_);
+                sec_ = ::std::move(_other.sec_);
+            }
+            return *this;
+        }
+#endif
+
+        Time& operator=(const Time &_other)
+        {
+            if (this != &_other) {
+                hour_ = _other.hour_;
+                min_ = _other.min_;
+                sec_ = _other.sec_;
+            }
+            return *this;
+        }
+
+        bool operator==(const Time& _other) const
+        {
+            return hour_ == _other.hour_ &&
+                min_ == _other.min_ &&
+                sec_ == _other.sec_;
+        }
+
+        bool operator!=(const Time& _other) const
+        {
+            return !(*this == _other);
+        }
+
+        uint16_t hour() const { return this->hour_; }
+        uint16_t& hour() { return this->hour_; }
+        void hour(uint16_t _val_) { this->hour_ = _val_; }
+        uint16_t min() const { return this->min_; }
+        uint16_t& min() { return this->min_; }
+        void min(uint16_t _val_) { this->min_ = _val_; }
+        uint16_t sec() const { return this->sec_; }
+        uint16_t& sec() { return this->sec_; }
+        void sec(uint16_t _val_) { this->sec_ = _val_; }
+    };
+
     class Message OSPL_DDS_FINAL
     {
     public:
         uint16_t id_;
         std::string username_;
-        std::string time_;
+        ChatDDS::Time time_;
         std::string content_;
 
     public:
@@ -20,7 +96,7 @@ namespace ChatDDS
         explicit Message(
             uint16_t id,
             const std::string& username,
-            const std::string& time,
+            const ChatDDS::Time& time,
             const std::string& content) : 
                 id_(id),
                 username_(username),
@@ -85,11 +161,11 @@ namespace ChatDDS
 #ifdef OSPL_DDS_CXX11
         void username(std::string&& _val_) { this->username_ = _val_; }
 #endif
-        const std::string& time() const { return this->time_; }
-        std::string& time() { return this->time_; }
-        void time(const std::string& _val_) { this->time_ = _val_; }
+        const ChatDDS::Time& time() const { return this->time_; }
+        ChatDDS::Time& time() { return this->time_; }
+        void time(const ChatDDS::Time& _val_) { this->time_ = _val_; }
 #ifdef OSPL_DDS_CXX11
-        void time(std::string&& _val_) { this->time_ = _val_; }
+        void time(ChatDDS::Time&& _val_) { this->time_ = _val_; }
 #endif
         const std::string& content() const { return this->content_; }
         std::string& content() { return this->content_; }

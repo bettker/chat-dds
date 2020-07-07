@@ -27,21 +27,21 @@ void Chat::Start() {
 
 void Chat::Run() {
     bool shouldRun = true;
-    while(shouldRun) {
+    while (shouldRun) {
 
         GUI::Begin();
-        GUI::BeginWindow("Chat DDS", Window::GetSize(), {0,0});
-        
+        GUI::BeginWindow("Chat DDS", Window::GetSize(), { 0,0 });
+
         if (initChat) {
             GUI::MakeText("Conectado como " + username + "\nSala: " + room + " (" + LangIdToString(lang) + ")");
 
             GUI::MakeSpace();
 
-            glm::vec2 size = {Window::GetSize().x - 20, Window::GetSize().y - 100};
+            glm::vec2 size = { Window::GetSize().x - 20, Window::GetSize().y - 100 };
             GUI::MakeMultiLineInput("##textboxshow", GetMultiLineMessages(size.x), size);
 
             GUI::MakeInput("##textboxtype", "Digite a mensagem", &messageTyped);
-            
+
             GUI::ContinueSameLine();
             if (GUI::MakeButton("Enviar")) {
 
@@ -54,46 +54,50 @@ void Chat::Run() {
                         if (x == ' ') {
                             v.push_back(word);
                             word = "";
-                        } else {
+                        }
+                        else {
                             word += x;
                         }
                     }
                     v.push_back(word);
 
-                    if (v[0] == "/join") {
-                        chatter->joinRoom(v[1]);
+                    if (v[0] == "/join" || v[0] == "/room") {
+                        JoinRoom(v[1]);
                         room = v[1];
-                    
-                    } else if (v[0] == "/pm") {
+
+                    }
+                    else if (v[0] == "/pm" || v[0] == "/private") {
                         chatter->sendPrivateMessage(v[1], v[2]);
-                    
-                    } else if (v[0] == "/ignore") {
+
+                    }
+                    else if (v[0] == "/ignore") {
                         messageBoard->ignoreUser(v[1]);
-                    
-                    } else {
+
+                    }
+                    else {
                         messageBoard->writeMessage(">> Comando \"" + v[0] + "\" não encontrado");
                     }
-
-                } else {
+                }
+                else {
                     chatter->sendMessage(messageTyped);
                 }
-
                 messageTyped = "";
             }
-            
+
             GUI::ContinueSameLine();
             if (GUI::MakeButton("Sair")) {
                 shouldRun = false;
             }
 
-        } else {
-            GUI::MakeSpace(); GUI::MakeSpace(); GUI::MakeSpace();
+        }
+        else {
+            GUI::MakeSpace(); GUI::MakeSpace();
             GUI::MakeSeparator();
-            GUI::MakeSpace(); GUI::MakeSpace(); GUI::MakeSpace();
+            GUI::MakeSpace(); GUI::MakeSpace();
 
             GUI::MakeText("                             Chat DDS");
 
-            GUI::MakeSpace(); GUI::MakeSpace(); GUI::MakeSpace();
+            GUI::MakeSpace(); GUI::MakeSpace();
             GUI::MakeSeparator();
             GUI::MakeSpace(); GUI::MakeSpace(); GUI::MakeSpace();
 
@@ -108,7 +112,7 @@ void Chat::Run() {
             GUI::MakeText("Idioma");
             GUI::ContinueSameLine();
             GUI::MakeHelpMarker("Idioma do bate-papo");
-            const char* items[] = {"Português", "Inglês", "Espanhol", "Alemão", "Italiano", "Francês"};
+            const char* items[] = {"Português", "Inglês", "Espanhol", "Alemão", "Francês"};
             if (ImGui::BeginCombo("##combo", items[lang]))
             {
                 for (int n = 0; n < IM_ARRAYSIZE(items); n++)
@@ -121,7 +125,7 @@ void Chat::Run() {
                 }
                 ImGui::EndCombo();
             }
-            
+
             GUI::MakeSpace(); GUI::MakeSpace();
 
             GUI::MakeText("Sala");
@@ -131,20 +135,23 @@ void Chat::Run() {
 
             GUI::MakeSpace(); GUI::MakeSpace();
 
-            if (ImGui::Button("Conectar", {Window::GetSize().x * (float)0.65, 30})) {
+            if (ImGui::Button("Conectar", { Window::GetSize().x * (float)0.65, 30 })) {
                 if (username == "")
                     username = "Visitante" + std::to_string(rand() % 999 + 1);
+
+                std::replace(username.begin(), username.end(), ' ', '_');
+                std::replace(room.begin(), room.end(), '@', '_');
 
                 chatter = new Chatter(username, room, lang);
                 messageBoard = new MessageBoard(username, room, lang);
 
-                chatter->joinRoom(room);
+                JoinRoom(room);
 
                 initChat = true;
             }
-            
-            GUI::ContinueSameLine();
-            if (ImGui::Button("Sair", { Window::GetSize().x * (float)0.29, 30 })) {
+
+            //GUI::ContinueSameLine();
+            if (ImGui::Button("Sair", { Window::GetSize().x * (float)0.65, 30 })) {
                 shouldRun = false;
             }
         }
@@ -161,6 +168,21 @@ void Chat::Exit() {
     Window::Destroy();
 }
 
+void Chat::JoinRoom(std::string room) {
+    std::cout << "entrou join room geral" << std::endl;
+    chatter->joinRoom(room);
+
+    std::cout << "passou 1 join room geral" << std::endl;
+
+    messageBoard->joinRoom(room);
+    
+    std::cout << "passou 2 join room geral" << std::endl;
+    
+    messageBoard->writeMessage(">> Você entrou na sala " + room);
+ 
+    std::cout << "passou 2 join room geral" << std::endl;
+}
+
 std::string* Chat::GetMultiLineMessages(float larg) {
     std::vector<std::string> newMessages = messageBoard->GetNewMessages();
 
@@ -173,6 +195,6 @@ std::string* Chat::GetMultiLineMessages(float larg) {
 }
 
 std::string Chat::LangIdToString(int l) {
-    const char* items[] = {"PT", "EN", "ES", "DE", "IT", "FR"};
+    const char* items[] = {"BR", "EN", "ES", "DE", "FR"};
     return items[l];
 }
