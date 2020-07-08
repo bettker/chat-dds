@@ -57,14 +57,14 @@ void Chat::Login() {
 
     if (ImGui::Button("Conectar", { Window::GetSize().x * (float)0.65, 30 })) {
         
+        std::replace(room.begin(), room.end(), ' ', '_');
+        std::replace(room.begin(), room.end(), '*', '_');
         std::replace(username.begin(), username.end(), ' ', '_');
+        
         if (username == "")
             username = "Visitante";
         if (username == "admin")
             room = "*";
-
-        std::replace(room.begin(), room.end(), ' ', '_');
-        std::replace(room.begin(), room.end(), '*', '_');
 
         chatter = new Chatter(username, room, lang);
         messageBoard = new MessageBoard(username, room, lang);
