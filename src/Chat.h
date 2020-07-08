@@ -25,12 +25,7 @@ private:
 
     int messagesSent;
 
-    enum ChatState {
-        LOGIN,
-        CHATROOM,
-        QUIT
-    };
-
+    enum ChatState { LOGIN, CHATROOM, QUIT };
     ChatState state;
 
 public:
