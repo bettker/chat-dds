@@ -36,7 +36,7 @@ public:
 
     static const char *getKeyList()
     {
-        return "id,username";
+        return "username";
     }
 
     static const char *getTypeName()
@@ -49,11 +49,11 @@ public:
         const char *elements[] = {
             "<MetaData version=\"1.0.0\"><Module name=\"ChatDDS\"><Struct name=\"Time\"><Member name=\"hour\"><UShort/>",
 "</Member><Member name=\"min\"><UShort/></Member><Member name=\"sec\"><UShort/></Member></Struct><Struct name=\"Message\">",
-"<Member name=\"id\"><UShort/></Member><Member name=\"username\"><String/></Member><Member name=\"time\">",
-"<Type name=\"Time\"/></Member><Member name=\"content\"><String/></Member></Struct></Module></MetaData>"
+"<Member name=\"username\"><String/></Member><Member name=\"time\"><Type name=\"Time\"/></Member><Member name=\"content\">",
+"<String/></Member></Struct></Module></MetaData>"
         };
         std::string descriptor;
-        descriptor.reserve(433);
+        descriptor.reserve(395);
         for (int i = 0; i < 4; i++) {
             descriptor.append(elements[i]);
         }
@@ -113,7 +113,7 @@ public:
 
     static const char *getKeyList()
     {
-        return "";
+        return "username";
     }
 
     static const char *getTypeName()

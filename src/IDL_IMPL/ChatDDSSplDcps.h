@@ -34,7 +34,6 @@ struct _ChatDDS_Message ;
 extern  v_copyin_result __ChatDDS_Message__copyIn(c_type dbType, const class ChatDDS::Message *from, struct _ChatDDS_Message *to);
 extern  void __ChatDDS_Message__copyOut(const void *_from, void *_to);
 struct _ChatDDS_Message {
-    c_ushort id;
     c_string username;
     struct _ChatDDS_Time time;
     c_string content;

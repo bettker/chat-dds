@@ -1,8 +1,9 @@
 #include "ChatListener.h"
 
-ChatListener::ChatListener(std::vector<std::string>* _messages)
+ChatListener::ChatListener(std::string _username, std::vector<std::string>* _messages)
 {
     messages = _messages;
+    querySys = "(username <> '" + _username + "')";
 }
 
 void ChatListener::on_data_available(dds::sub::DataReader<ChatDDS::Message>& reader)
@@ -35,7 +36,8 @@ void ChatListener::on_data_available(dds::sub::DataReader<ChatDDS::SystemMessage
 {
     char time[10];
     try {
-        dds::sub::LoanedSamples<ChatDDS::SystemMessage> samples = reader.take();
+        dds::sub::Query query(reader, querySys);
+        dds::sub::LoanedSamples<ChatDDS::SystemMessage> samples = reader.select().content(query).take();
 
         if ((*samples.begin()).info().valid())
         {

@@ -7,21 +7,17 @@ module ChatDDS {
     };
 
     struct Message {
-        unsigned short id;
         string username;
         Time time;
         string content;
     };
-    #pragma keylist Message id, username
+    #pragma keylist Message username
 
-    enum SystemMessageType {
-        JOIN,
-        QUIT
-    };
+    enum SystemMessageType { JOIN, QUIT };
 
     struct SystemMessage {
         string username;
         SystemMessageType type;
     };
-    #pragma keylist SystemMessage
+    #pragma keylist SystemMessage username
 };

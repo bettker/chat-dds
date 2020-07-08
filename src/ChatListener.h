@@ -8,9 +8,10 @@ class ChatListener : public virtual dds::sub::DataReaderListener<ChatDDS::Messag
     public virtual dds::sub::DataReaderListener<ChatDDS::SystemMessage>, public virtual dds::sub::NoOpDataReaderListener<ChatDDS::SystemMessage> {
 private:
     std::vector<std::string>* messages = nullptr;
+    std::string querySys;
 
 public:
-    ChatListener(std::vector<std::string>* _messages);
+    ChatListener(std::string _username, std::vector<std::string>* _messages);
 
     virtual void on_data_available(dds::sub::DataReader<ChatDDS::Message>& reader);
 

@@ -57,15 +57,13 @@ void Chat::Login() {
 
     if (ImGui::Button("Conectar", { Window::GetSize().x * (float)0.65, 30 })) {
         if (username == "")
-            username = "Visitante"; // +std::to_string(rand() % 999 + 1);
+            username = "Visitante";
 
         std::replace(username.begin(), username.end(), ' ', '_');
         std::replace(room.begin(), room.end(), ' ', '_');
 
         chatter = new Chatter(username, room, lang);
         messageBoard = new MessageBoard(username, room, lang);
-
-        JoinRoom(room);
 
         state = ChatState::CHATROOM;
     }
@@ -76,7 +74,8 @@ void Chat::Login() {
 }
 
 void Chat::Chatroom() {
-    GUI::MakeText("Conectado como " + username + "\nSala: " + room + " (" + LangIdToString(lang) + ")");
+    GUI::MakeText("Conectado como " + username + "\n" +
+                  "Sala: " + room + " (" + LangIdToString(lang) + ")");
 
     GUI::MakeSpace();
 
@@ -87,29 +86,7 @@ void Chat::Chatroom() {
 
     GUI::ContinueSameLine();
     if (GUI::MakeButton("Enviar")) {
-
-        if (messageTyped[0] == '/') {
-            std::size_t spaceIdx = messageTyped.find(" ");
-            std::string command = messageTyped.substr(0, spaceIdx);
-            std::string arg = messageTyped.substr(spaceIdx + 1);
-
-            if (command == "/join" || command == "/room") {
-                if (arg != room) {
-                    chatter->quitRoom();
-                    JoinRoom(arg);
-                    room = arg;
-                }
-            }
-            else if (command == "/ignore") {
-                messageBoard->ignoreUser(arg);
-            }
-            else {
-                messageBoard->writeMessage(">> Comando \"" + command + "\" não encontrado");
-            }
-        }
-        else {
-            chatter->sendMessage(messageTyped);
-        }
+        chatter->sendMessage(messageTyped);
         messageTyped = "";
     }
 
@@ -162,18 +139,12 @@ void Chat::Exit() {
     Window::Destroy();
 }
 
-void Chat::JoinRoom(std::string room) {
-    messageBoard->joinRoom(room);
-    chatter->joinRoom(room);
-}
-
 std::string* Chat::GetMultiLineMessages(float larg) {
     std::vector<std::string> newMessages = messageBoard->GetNewMessages();
 
     if (newMessages.size() > 0) {
         for (int i = 0; i < newMessages.size(); i++) {
-            if (newMessages[i].find(">> " + username) == std::string::npos)
-                messagesMultiLine += (messagesMultiLine.size() == 0 ? "" : "\n") + newMessages[i];
+            messagesMultiLine += (messagesMultiLine != "" ? "\n" : "") + newMessages[i];
         }
     }
 

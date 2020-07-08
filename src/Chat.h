@@ -47,8 +47,6 @@ private:
 
     void Chatroom();
 
-    void JoinRoom(std::string room);
-
     std::string* GetMultiLineMessages(float larg);
 
     std::string LangIdToString(int l);

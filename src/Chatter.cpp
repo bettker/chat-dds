@@ -3,7 +3,6 @@
 Chatter::Chatter(std::string _username, std::string room, int lang) {
     try {
         username = _username;
-        messagesSent = 0;
 
         dp = dds::domain::DomainParticipant(lang);
 
@@ -12,35 +11,22 @@ Chatter::Chatter(std::string _username, std::string room, int lang) {
             << dds::core::policy::Reliability::Reliable()
             << dds::core::policy::Deadline(dds::core::Duration(1, 0));
 
-        topic_room = dds::topic::Topic<ChatDDS::Message>(dp, "RoomMsgTopic", topicQos);
-        topic_sys = dds::topic::Topic<ChatDDS::SystemMessage>(dp, "SystemMsgTopic", topicQos);
+        topicRoom = dds::topic::Topic<ChatDDS::Message>(dp, "RoomMsgTopic", topicQos);
+        topicSys = dds::topic::Topic<ChatDDS::SystemMessage>(dp, "SystemMsgTopic", topicQos);
 
         dwQos = topicQos;
-        dwQos << dds::core::policy::WriterDataLifecycle::ManuallyDisposeUnregisteredInstances();
-    }
-    catch (const dds::core::Exception& e) {
-        std::cout << "Error (Chatter constructor): " << e.what() << std::endl;
-        exit(1);
-    }
-}
+        dwQos << dds::core::policy::WriterDataLifecycle::AutoDisposeUnregisteredInstances();
 
-void Chatter::joinRoom(std::string room) {
-    try {
-        if (pub == dds::core::null) {
-            pubQos = dp.default_publisher_qos() << dds::core::policy::Partition(room);
-            pub = dds::pub::Publisher(dp, pubQos);
-            dwM = dds::pub::DataWriter<ChatDDS::Message>(pub, topic_room, dwQos);
-            dwSM = dds::pub::DataWriter<ChatDDS::SystemMessage>(pub, topic_sys, dwQos);
-        }
-        else {
-            pub.qos(dp.default_publisher_qos() << dds::core::policy::Partition(room));
-        }
+        pubQos = dp.default_publisher_qos() << dds::core::policy::Partition(room);
+        pub = dds::pub::Publisher(dp, pubQos);
+        dwM = dds::pub::DataWriter<ChatDDS::Message>(pub, topicRoom, dwQos);
+        dwSM = dds::pub::DataWriter<ChatDDS::SystemMessage>(pub, topicSys, dwQos);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         dwSM << ChatDDS::SystemMessage(username, ChatDDS::SystemMessageType::JOIN);
     }
     catch (const dds::core::Exception& e) {
-        std::cout << "Error (joinRoom): " << e.what() << std::endl;
+        std::cout << "Error (Chatter constructor): " << e.what() << std::endl;
         exit(1);
     }
 }
@@ -57,7 +43,7 @@ void Chatter::quitRoom() {
 
 void Chatter::sendMessage(std::string message) {
     try {
-        dwM << ChatDDS::Message(messagesSent++, username, getTime(), message);
+        dwM << ChatDDS::Message(username, getTime(), message);
     }
     catch (const dds::core::Exception& e) {
         std::cout << "Error (sendMessage): " << e.what() << std::endl;

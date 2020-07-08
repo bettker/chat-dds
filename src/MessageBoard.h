@@ -11,16 +11,17 @@ private:
     std::string username;
     std::vector<std::string> newMessages;
 
-    std::string filter_expression;
-    std::vector<std::string> ignoredUsers;
+    std::string expressionIgnore;
 
-    ChatListener listener = ChatListener(&newMessages);
+    ChatListener* listener;
 
     dds::domain::DomainParticipant dp = dds::core::null;
     
     dds::topic::qos::TopicQos topicQos;
-    dds::topic::Topic<ChatDDS::Message> topic_room = dds::core::null;
-    dds::topic::Topic<ChatDDS::SystemMessage> topic_sys = dds::core::null;
+    dds::topic::Topic<ChatDDS::Message> topicRoom = dds::core::null;
+    dds::topic::Topic<ChatDDS::SystemMessage> topicSys = dds::core::null;
+
+    dds::topic::ContentFilteredTopic<ChatDDS::Message> cfTopicRoom = cfTopicRoom;
 
     dds::sub::qos::SubscriberQos subQos;
     dds::sub::Subscriber sub = dds::core::null;
@@ -35,10 +36,6 @@ public:
     MessageBoard(std::string _username, std::string room, int lang);
 
     std::vector<std::string> GetNewMessages();
-
-    void joinRoom(std::string room);
-
-    void ignoreUser(std::string user);
 
     void writeMessage(std::string msg);
 };

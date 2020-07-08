@@ -84,34 +84,28 @@ namespace ChatDDS
     class Message OSPL_DDS_FINAL
     {
     public:
-        uint16_t id_;
         std::string username_;
         ChatDDS::Time time_;
         std::string content_;
 
     public:
-        Message() :
-                id_(0) {}
+        Message() {}
 
         explicit Message(
-            uint16_t id,
             const std::string& username,
             const ChatDDS::Time& time,
             const std::string& content) : 
-                id_(id),
                 username_(username),
                 time_(time),
                 content_(content) {}
 
         Message(const Message &_other) : 
-                id_(_other.id_),
                 username_(_other.username_),
                 time_(_other.time_),
                 content_(_other.content_) {}
 
 #ifdef OSPL_DDS_CXX11
         Message(Message &&_other) : 
-                id_(::std::move(_other.id_)),
                 username_(::std::move(_other.username_)),
                 time_(::std::move(_other.time_)),
                 content_(::std::move(_other.content_)) {}
@@ -119,7 +113,6 @@ namespace ChatDDS
         Message& operator=(Message &&_other)
         {
             if (this != &_other) {
-                id_ = ::std::move(_other.id_);
                 username_ = ::std::move(_other.username_);
                 time_ = ::std::move(_other.time_);
                 content_ = ::std::move(_other.content_);
@@ -131,7 +124,6 @@ namespace ChatDDS
         Message& operator=(const Message &_other)
         {
             if (this != &_other) {
-                id_ = _other.id_;
                 username_ = _other.username_;
                 time_ = _other.time_;
                 content_ = _other.content_;
@@ -141,8 +133,7 @@ namespace ChatDDS
 
         bool operator==(const Message& _other) const
         {
-            return id_ == _other.id_ &&
-                username_ == _other.username_ &&
+            return username_ == _other.username_ &&
                 time_ == _other.time_ &&
                 content_ == _other.content_;
         }
@@ -152,9 +143,6 @@ namespace ChatDDS
             return !(*this == _other);
         }
 
-        uint16_t id() const { return this->id_; }
-        uint16_t& id() { return this->id_; }
-        void id(uint16_t _val_) { this->id_ = _val_; }
         const std::string& username() const { return this->username_; }
         std::string& username() { return this->username_; }
         void username(const std::string& _val_) { this->username_ = _val_; }

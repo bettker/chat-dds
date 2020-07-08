@@ -30,11 +30,10 @@ __ChatDDS_Message__copyIn(
     v_copyin_result result = V_COPYIN_RESULT_OK;
     (void) dbType;
 
-    to->id = (c_ushort)from->id();
     to->username = c_stringNew(c_getBase(dbType), from->username_.c_str());
     if(V_COPYIN_RESULT_IS_OK(result)){
         extern v_copyin_result __ChatDDS_Time__copyIn(c_type, const ChatDDS::Time *, _ChatDDS_Time *);
-        result = __ChatDDS_Time__copyIn(c_memberType(c_structureMember(dbType, 2)), &from->time(), &to->time);
+        result = __ChatDDS_Time__copyIn(c_memberType(c_structureMember(dbType, 1)), &from->time(), &to->time);
     }
     to->content = c_stringNew(c_getBase(dbType), from->content_.c_str());
     return result;
@@ -78,7 +77,6 @@ __ChatDDS_Message__copyOut(
 {
     const struct _ChatDDS_Message *from = (const struct _ChatDDS_Message *)_from;
     class ::ChatDDS::Message *to = (class ::ChatDDS::Message *)_to;
-    to->id((uint16_t)from->id);
     to->username(from->username ? from->username : "");
     {
         extern void __ChatDDS_Time__copyOut(const void *, void *);
