@@ -1,5 +1,7 @@
 #include <string>
 #include <stdlib.h>
+#include <thread>
+#include <chrono>
 
 #include "WindowAPI/Window.hpp"
 #include "WindowAPI/GUI.h"
@@ -25,7 +27,13 @@ private:
 
     int messagesSent;
 
-    bool initChat;
+    enum ChatState {
+        LOGIN,
+        CHATROOM,
+        QUIT
+    };
+
+    ChatState state;
 
 public:
     Chat();
@@ -37,6 +45,10 @@ public:
     void Exit();
 
 private:
+    void Login();
+
+    void Chatroom();
+
     void JoinRoom(std::string room);
 
     std::string* GetMultiLineMessages(float larg);

@@ -33,10 +33,13 @@ std::vector<std::string> MessageBoard::GetNewMessages() {
 
 void MessageBoard::joinRoom(std::string room) {
     try {
-        subQos = dp.default_subscriber_qos() << dds::core::policy::Partition(room);
-        sub = dds::sub::Subscriber(dp, subQos);
-        drM = dds::sub::DataReader<ChatDDS::Message>(sub, topic_room, drQos, &listener, mask);
-        drSM = dds::sub::DataReader<ChatDDS::SystemMessage>(sub, topic_sys, drQos, &listener, mask);
+        if (sub == dds::core::null) {
+            subQos = dp.default_subscriber_qos() << dds::core::policy::Partition(room);
+            sub = dds::sub::Subscriber(dp, subQos);
+        }
+        else {
+            sub.qos(dp.default_subscriber_qos() << dds::core::policy::Partition(room));
+        }
     }
     catch (const dds::core::Exception& e) {
         std::cout << "Error (joinRoom): " << e.what() << std::endl;

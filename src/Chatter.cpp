@@ -26,10 +26,15 @@ Chatter::Chatter(std::string _username, std::string room, int lang) {
 
 void Chatter::joinRoom(std::string room) {
     try {
-        pubQos = dp.default_publisher_qos() << dds::core::policy::Partition(room);
-        pub = dds::pub::Publisher(dp, pubQos);
-        dwM = dds::pub::DataWriter<ChatDDS::Message>(pub, topic_room, dwQos);
-        dwSM = dds::pub::DataWriter<ChatDDS::SystemMessage>(pub, topic_sys, dwQos);
+        if (pub == dds::core::null) {
+            pubQos = dp.default_publisher_qos() << dds::core::policy::Partition(room);
+            pub = dds::pub::Publisher(dp, pubQos);
+            dwM = dds::pub::DataWriter<ChatDDS::Message>(pub, topic_room, dwQos);
+            dwSM = dds::pub::DataWriter<ChatDDS::SystemMessage>(pub, topic_sys, dwQos);
+        }
+        else {
+            pub.qos(dp.default_publisher_qos() << dds::core::policy::Partition(room));
+        }
 
         dwSM << ChatDDS::SystemMessage(username, ChatDDS::SystemMessageType::JOIN);
     }
