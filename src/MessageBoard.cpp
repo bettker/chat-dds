@@ -15,7 +15,16 @@ MessageBoard::MessageBoard(std::string _username, std::string room, int lang) {
         topic_room = dds::topic::Topic<ChatDDS::Message>(dp, "RoomMsgTopic", topicQos);
         topic_sys = dds::topic::Topic<ChatDDS::SystemMessage>(dp, "SystemMsgTopic", topicQos);
 
+        std::string expression = "(username <> 'Visitante')";
+        dds::topic::Filter filter(expression);
+        dds::topic::ContentFilteredTopic<ChatDDS::Message> cfTopic(topic_room, "RoomMsgTopic", filter);
+
         mask << dds::core::status::StatusMask::data_available();
+
+        subQos = dp.default_subscriber_qos() << dds::core::policy::Partition(room);
+        sub = dds::sub::Subscriber(dp, subQos);
+        drM = dds::sub::DataReader<ChatDDS::Message>(sub, cfTopic, drQos, &listener, mask);
+        drSM = dds::sub::DataReader<ChatDDS::SystemMessage>(sub, topic_sys, drQos, &listener, mask);
     }
     catch (const dds::core::Exception& e) {
         std::cout << "Error (MessageBoard constructor): " << e.what() << std::endl;
@@ -34,11 +43,13 @@ std::vector<std::string> MessageBoard::GetNewMessages() {
 void MessageBoard::joinRoom(std::string room) {
     try {
         if (sub == dds::core::null) {
-            subQos = dp.default_subscriber_qos() << dds::core::policy::Partition(room);
-            sub = dds::sub::Subscriber(dp, subQos);
+            //subQos = dp.default_subscriber_qos() << dds::core::policy::Partition(room);
+            //sub = dds::sub::Subscriber(dp, subQos);
+            //drM = dds::sub::DataReader<ChatDDS::Message>(sub, topic_room, drQos, &listener, mask);
+            //drSM = dds::sub::DataReader<ChatDDS::SystemMessage>(sub, topic_sys, drQos, &listener, mask);
         }
         else {
-            sub.qos(dp.default_subscriber_qos() << dds::core::policy::Partition(room));
+            //sub.qos(dp.default_subscriber_qos() << dds::core::policy::Partition(room));
         }
     }
     catch (const dds::core::Exception& e) {

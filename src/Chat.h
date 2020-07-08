@@ -1,7 +1,5 @@
 #include <string>
 #include <stdlib.h>
-#include <thread>
-#include <chrono>
 
 #include "WindowAPI/Window.hpp"
 #include "WindowAPI/GUI.h"

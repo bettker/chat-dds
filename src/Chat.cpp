@@ -57,10 +57,10 @@ void Chat::Login() {
 
     if (ImGui::Button("Conectar", { Window::GetSize().x * (float)0.65, 30 })) {
         if (username == "")
-            username = "Visitante" + std::to_string(rand() % 999 + 1);
+            username = "Visitante"; // +std::to_string(rand() % 999 + 1);
 
         std::replace(username.begin(), username.end(), ' ', '_');
-        std::replace(room.begin(), room.end(), '@', '_');
+        std::replace(room.begin(), room.end(), ' ', '_');
 
         chatter = new Chatter(username, room, lang);
         messageBoard = new MessageBoard(username, room, lang);
@@ -122,6 +122,8 @@ void Chat::Chatroom() {
 
 void Chat::Start() {
     WindowConfigStruct config;
+
+    srand(time(NULL));
 
     config.windowName = "Chat DDS";
     config.windowPosition = {20, 40};

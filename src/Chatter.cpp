@@ -36,6 +36,7 @@ void Chatter::joinRoom(std::string room) {
             pub.qos(dp.default_publisher_qos() << dds::core::policy::Partition(room));
         }
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         dwSM << ChatDDS::SystemMessage(username, ChatDDS::SystemMessageType::JOIN);
     }
     catch (const dds::core::Exception& e) {
